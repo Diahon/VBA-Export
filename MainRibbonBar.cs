@@ -33,27 +33,63 @@ namespace VBA_Export
 
                     // Generate designer code for windows forms
                     FormEmitter emitter = new FormEmitter(module.Name);
-                    foreach (Control control in frm.Controls)
+                    foreach (var child in frm.Controls)
                     {
-                        CommandButton button = control as CommandButton;
-                        if (button != null)
+                        Control control = child as Control;
+                        if (control != null)
                         {
-                            emitter.EmitButton(control.Name, button.Caption, new Rectangle((int)control.Left, (int)control.Top, (int)control.Width, (int)control.Height));
-                            continue;
-                        }
+                            CommandButton button = control as CommandButton;
+                            if (button != null)
+                            {
+                                emitter.EmitButton(
+                                    control.Name,
+                                    button.Caption,
+                                    new Rectangle((int)control.Left, (int)control.Top, (int)control.Width, (int)control.Height)
+                                );
+                                continue;
+                            }
 
-                        Label label = control as Label;
-                        if (label != null)
-                        {
-                            emitter.EmitLabel(control.Name, label.Caption, new Rectangle((int)control.Left, (int)control.Top, (int)control.Width, (int)control.Height));
-                            continue;
-                        }
+                            Label label = control as Label;
+                            if (label != null)
+                            {
+                                FontStyle fontStyle = FontStyle.Regular;
+                                if (label.FontBold)
+                                    fontStyle |= FontStyle.Bold;
+                                if (label.FontItalic)
+                                    fontStyle |= FontStyle.Italic;
+                                if (label.FontStrikethru)
+                                    fontStyle |= FontStyle.Strikeout;
+                                if (label.FontUnderline)
+                                    fontStyle |= FontStyle.Underline;
 
-                        TextBox textBox = control as TextBox;
-                        if (textBox != null)
-                        {
-                            emitter.EmitTextBox(control.Name, new Rectangle((int)control.Left, (int)control.Top, (int)control.Width, (int)control.Height));
-                            continue;
+                                emitter.EmitLabel(
+                                    control.Name,
+                                    label.Caption,
+                                    new Rectangle((int)control.Left, (int)control.Top, (int)control.Width, (int)control.Height),
+                                    new System.Drawing.Font(label.FontName, (float)label.FontSize, fontStyle, GraphicsUnit.Point)
+                                );
+                                continue;
+                            }
+
+                            TextBox textBox = control as TextBox;
+                            if (textBox != null)
+                            {
+                                emitter.EmitTextBox(
+                                    control.Name,
+                                    new Rectangle((int)control.Left, (int)control.Top, (int)control.Width, (int)control.Height)
+                                );
+                                continue;
+                            }
+
+                            ComboBox comboBox = control as ComboBox;
+                            if (comboBox != null)
+                            {
+                                emitter.EmitComboBox(
+                                    control.Name,
+                                    new Rectangle((int)control.Left, (int)control.Top, (int)control.Width, (int)control.Height)
+                                );
+                                continue;
+                            }
                         }
                     }
                     emitter.EmitFormProperties(new Size((int)frm.InsideWidth, (int)frm.InsideHeight));

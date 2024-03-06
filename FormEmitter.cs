@@ -53,18 +53,29 @@ namespace VBA_Export
             SetProperty(name, "Location", rect.Location);
             SetProperty(name, "Size", rect.Size);
         }
+
         public void EmitTextBox(string name, Rectangle rect)
         {
             InitControl(name, "TextBox");
             SetProperty(name, "Location", rect.Location);
             SetProperty(name, "Size", rect.Size);
         }
-        public void EmitLabel(string name, string text, Rectangle rect)
+
+        public void EmitComboBox(string name, Rectangle rect)
+        {
+            InitControl(name, "ComboBox");
+            SetProperty(name, "Location", rect.Location);
+            SetProperty(name, "Size", rect.Size);
+        }
+
+        public void EmitLabel(string name, string text, Rectangle rect, Font font)
         {
             InitControl(name, "Label");
             SetProperty(name, "Text", text);
             SetProperty(name, "Location", rect.Location);
             SetProperty(name, "Size", rect.Size);
+            SetProperty(name, "AutoSize", true);
+            SetProperty(name, "Font", font);
         }
 
         public void EmitFormProperties(Size size)
@@ -77,7 +88,8 @@ namespace VBA_Export
             SetProperty(new CodeThisReferenceExpression(), "Name", Name);
             SetProperty(new CodeThisReferenceExpression(), "Text", Name);
             SetProperty(new CodeThisReferenceExpression(), "ClientSize", size);
-            SetProperty(new CodeThisReferenceExpression(), "AutoScaleMode", System.Windows.Forms.AutoScaleMode.Dpi);
+            SetProperty(new CodeThisReferenceExpression(), "AutoScaleMode", System.Windows.Forms.AutoScaleMode.Font);
+            SetProperty(new CodeThisReferenceExpression(), "AutoScaleDimensions", new SizeF(4f, 13f));
 
             CallMethod(new CodeThisReferenceExpression(), "ResumeLayout");
         }
